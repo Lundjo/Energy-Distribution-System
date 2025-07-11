@@ -1,0 +1,3 @@
+[workspace]
+members = ["renewables", "distribution", "hydro", "user"]
+resolver = "2"
