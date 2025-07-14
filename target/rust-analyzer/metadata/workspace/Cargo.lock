@@ -114,6 +114,9 @@ checksum = "07e28edb80900c19c28f1072f2e8aeca7fa06b23cd4169cefe1af5aa3260783f"
 [[package]]
 name = "hydro"
 version = "0.1.0"
+dependencies = [
+ "tokio",
+]
 
 [[package]]
 name = "icu_collections"
@@ -605,6 +608,9 @@ dependencies = [
 [[package]]
 name = "user"
 version = "0.1.0"
+dependencies = [
+ "tokio",
+]
 
 [[package]]
 name = "utf8_iter"

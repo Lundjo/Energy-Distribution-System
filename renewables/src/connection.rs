@@ -1,14 +1,29 @@
-use std::net::{TcpListener, TcpStream};
-use std::io::{Read, Write};
+use tokio::net::TcpListener;
+use tokio::io::AsyncReadExt;
 
-pub fn start_server() {
-    let listener = TcpListener::bind("127.0.0.1:8081").unwrap();
+pub async fn start_server() {
+    let listener = TcpListener::bind("127.0.0.1:8081").await.unwrap();
     println!("Listening on port na 8081...");
 
-    for stream in listener.incoming() {
-        let mut stream = stream.unwrap();
-        let mut buffer = [0; 1024];
-        stream.read(&mut buffer).unwrap();
-        println!("Received message: {}", String::from_utf8_lossy(&buffer[..]));
+    loop {
+        match listener.accept().await {
+            Ok((mut stream, _)) => {
+                let mut buffer = [0; 1024];
+                match stream.read(&mut buffer).await {
+                    Ok(n) => {
+                        if n == 0 {
+                            continue;
+                        }
+                        println!("Received message: {}", String::from_utf8_lossy(&buffer[..n]));
+                    }
+                    Err(e) => {
+                        eprintln!("Failed to read from socket: {}", e);
+                    }
+                }
+            }
+            Err(e) => {
+                eprintln!("Failed to accept connection: {}", e);
+            }
+        }
     }
 }
