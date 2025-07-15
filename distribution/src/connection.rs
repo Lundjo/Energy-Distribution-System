@@ -2,7 +2,7 @@ use tokio::net::{TcpStream, TcpListener};
 use tokio::io::{AsyncWriteExt, AsyncReadExt};
 use std::error::Error;
 
-pub async fn send_message1(message: &str) -> Result<(), Box<dyn Error>> {
+pub async fn send_message_to_renewables(message: &str) -> Result<(), Box<dyn Error>> {
     let mut stream = TcpStream::connect("127.0.0.1:8081").await.map_err(|e| {
         format!("Failed to connect to server at 127.0.0.1:8081: {}", e)
     })?;

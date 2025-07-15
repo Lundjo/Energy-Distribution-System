@@ -1,7 +1,7 @@
 mod connection;
 use connection::start_server;
 mod inputs;
-use inputs::input;
+use inputs::change_number_of_generators;
 
 #[tokio::main]
 async fn main() {
@@ -9,8 +9,8 @@ async fn main() {
         start_server().await;
     });
 
-    match input().await{
-        Ok(_) => println!("Message sent successfully"),
-        Err(e) => eprintln!("Message could not be sent: {}", e),
+    match change_number_of_generators().await{
+        Ok(_) => println!("Session ended safely"),
+        Err(e) => eprintln!("Error running program: {}", e),
     }
 }
