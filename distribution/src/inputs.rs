@@ -33,8 +33,8 @@ pub async fn change_number_of_generators() -> Result<(), Box<dyn Error>> {
         let message = format!("{},{}", num1, num2);
         
         match send_message_to_renewables(&message).await {
-            Ok(_) => println!("Values sent successfully: {} and {}", num1, num2),
-            Err(e) => eprintln!("Error during transmission: {}", e),
+            Ok(response) => println!("Server responded: {}", response),
+            Err(e) => eprintln!("Error: {}", e),
         }
     }
 }

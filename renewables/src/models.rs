@@ -6,10 +6,10 @@ pub struct RenewableEnergy {
 }
 
 impl RenewableEnergy {
-    pub fn new(wind_generators: u32, solar_panels: u32) -> Self {
+    pub fn new() -> Self {
         RenewableEnergy {
-            wind_generators,
-            solar_panels,
+            wind_generators: 5,
+            solar_panels: 5,
             wind_production: 0.0,
             solar_production: 0.0,
         }
@@ -18,5 +18,10 @@ impl RenewableEnergy {
     pub fn simulate_production(&mut self) {
         self.wind_production = rand::random::<f64>() * 100.0;
         self.solar_production = rand::random::<f64>() * 100.0;
+    }
+
+    pub fn add_generators(&mut self, wind_generators: u32, solar_panels: u32) {
+        self.wind_generators = wind_generators;
+        self.solar_panels = solar_panels;
     }
 }
