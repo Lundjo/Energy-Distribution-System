@@ -6,9 +6,13 @@ use connection::start_server;
 use tokio::sync::mpsc;
 use tokio::time::sleep;
 use tokio::io::AsyncWriteExt;
+mod database;
+use database::create_db;
 
 #[tokio::main]
 async fn main() {
+    let _ = create_db();
+
     let (tx, mut rx) = mpsc::channel(32);
     
     tokio::spawn(async move {
