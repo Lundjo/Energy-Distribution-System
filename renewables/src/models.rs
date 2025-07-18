@@ -1,3 +1,5 @@
+use crate::database::insert_into_db;
+
 pub struct RenewableEnergy {
     pub wind_generators: i32,
     pub solar_panels: i32,
@@ -18,6 +20,7 @@ impl RenewableEnergy {
     pub fn simulate_production(&mut self) {
         self.wind_production = rand::random::<f64>() * 100.0;
         self.solar_production = rand::random::<f64>() * 100.0;
+        let _ = insert_into_db(self);
     }
 
     pub fn add_generators(&mut self, message: String) -> String {
@@ -47,6 +50,8 @@ impl RenewableEnergy {
         if self.solar_panels < 0 {
             self.solar_panels = 0;
         }
+
+        let _ = insert_into_db(self);
 
         return String::from(format!("Wind generators: {}, Solar panels: {}", self.wind_generators, self.solar_panels));
     }
