@@ -22,7 +22,8 @@ async fn main() {
             Some((message, mut stream)) = rx.recv() => {
                 println!("Received message from server side: {}", message);
 
-                let response = RenewableEnergy::add_generators(&mut renewables, message);
+                //let response = RenewableEnergy::add_generators(&mut renewables, message);
+                let response = RenewableEnergy::calculate_production(&renewables);
                 if let Err(e) = stream.write_all(response.as_bytes()).await {
                     eprintln!("Failed to send response from main: {}", e);
                 }

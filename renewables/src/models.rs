@@ -50,4 +50,8 @@ impl RenewableEnergy {
 
         return String::from(format!("Wind generators: {}, Solar panels: {}", self.wind_generators, self.solar_panels));
     }
+
+    pub fn calculate_production(&self) -> String {
+        return String::from(format!("{} {}", self.wind_generators as f64 * self.wind_production, self.solar_panels as f64 * self.solar_production));
+    }
 }
