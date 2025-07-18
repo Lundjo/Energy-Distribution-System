@@ -9,6 +9,8 @@ use tokio::io::AsyncWriteExt;
 mod database;
 use database::create_db;
 
+use crate::database::get_initial_values;
+
 #[tokio::main]
 async fn main() {
     let _ = create_db();
@@ -20,6 +22,8 @@ async fn main() {
     });
 
     let mut renewables = RenewableEnergy::new();
+
+    let _ = get_initial_values(&mut renewables);
 
     loop {
         tokio::select! {
