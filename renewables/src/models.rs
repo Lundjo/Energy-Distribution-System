@@ -1,3 +1,5 @@
+use rand::Rng;
+
 use crate::database::insert_into_db;
 
 pub struct RenewableEnergy {
@@ -12,14 +14,26 @@ impl RenewableEnergy {
         RenewableEnergy {
             wind_generators: 5,
             solar_panels: 5,
-            wind_production: 0.0,
-            solar_production: 0.0,
+            wind_production: 15.0,
+            solar_production: 15.0,
         }
     }
 
     pub fn simulate_production(&mut self) {
-        self.wind_production = rand::random::<f64>() * 100.0;
-        self.solar_production = rand::random::<f64>() * 100.0;
+        self.wind_production += rand::thread_rng().gen_range(-1.0..1.0);
+        if self.wind_production < 10.0 {
+            self.wind_production = 10.0;
+        } else if self.wind_production > 20.0 {
+            self.wind_production = 20.0;
+        }
+
+        self.solar_production += rand::thread_rng().gen_range(-1.0..1.0);
+        if self.solar_production < 10.0 {
+            self.solar_production = 10.0;
+        } else if self.solar_production > 20.0 {
+            self.solar_production = 20.0;
+        }
+
         let _ = insert_into_db(self);
     }
 
