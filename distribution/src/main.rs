@@ -1,7 +1,7 @@
 mod connection;
 use connection::start_server;
 mod inputs;
-use inputs::change_number_of_generators;
+use inputs::select_renewables;
 
 #[tokio::main]
 async fn main() {
@@ -9,8 +9,10 @@ async fn main() {
         start_server().await;
     });
 
-    match change_number_of_generators().await{
-        Ok(_) => println!("Session ended safely"),
-        Err(e) => eprintln!("Error running program: {}", e),
+    loop {
+        match select_renewables().await{
+            Ok(_) => println!("Session ended safely"),
+            Err(e) => eprintln!("Error running program: {}", e),
+        }
     }
 }

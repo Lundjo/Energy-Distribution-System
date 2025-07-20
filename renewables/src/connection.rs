@@ -2,6 +2,8 @@ use tokio::net::TcpListener;
 use tokio::io::AsyncReadExt;
 use tokio::sync::mpsc;
 
+use crate::models::RenewableEnergy;
+
 pub async fn start_server(tx: mpsc::Sender<(String, tokio::net::TcpStream)>) {
     let listener = TcpListener::bind("127.0.0.1:8081").await.unwrap();
     println!("Listening on port na 8081...");
@@ -32,5 +34,17 @@ pub async fn start_server(tx: mpsc::Sender<(String, tokio::net::TcpStream)>) {
                 eprintln!("Failed to accept connection: {}", e);
             }
         }
+    }
+}
+
+pub fn select_method(re: &mut RenewableEnergy, message: String) -> String {
+    let parts: Vec<&str> = message.split_whitespace().collect();
+
+    if parts[0] == "0" {
+        return RenewableEnergy::add_generators(re, message);
+    } else if parts[0] == "1" {
+        return RenewableEnergy::calculate_production(re);
+    } else {
+        return String::from("Unsupported method");
     }
 }
