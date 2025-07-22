@@ -1,3 +1,5 @@
+use crate::database::insert_into_db;
+
 pub struct HydroEnergy {
     pub production: f64,
     pub usage: f64,
@@ -22,7 +24,8 @@ impl HydroEnergy {
         }
 
         self.production += additional_production;
-        self.usage = additional_production * 100.0 / 200.0;
+        self.usage = self.production * 100.0 / 200.0;
+        let _ = insert_into_db(self);
 
         return String::from(format!("Power production changed. Current load: {}", self.usage));
     }

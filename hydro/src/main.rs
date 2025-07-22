@@ -4,9 +4,12 @@ mod models;
 use models::HydroEnergy;
 use tokio::sync::mpsc;
 use tokio::io::AsyncWriteExt;
+mod database;
+use database::{create_db, get_initial_values};
 
 #[tokio::main]
 async fn main() {
+    let _ = create_db();
     let (tx, mut rx) = mpsc::channel(32);
 
     tokio::spawn(async {
@@ -14,6 +17,7 @@ async fn main() {
     });
 
     let mut hydro = HydroEnergy::new();
+    let _ = get_initial_values(&mut hydro);
 
     loop {
         tokio::select! {

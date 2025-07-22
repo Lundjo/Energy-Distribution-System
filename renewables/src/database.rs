@@ -14,8 +14,7 @@ pub fn create_db() -> Result<()> {
                 wind_generators INTEGER NOT NULL,
                 wind_production REAL NOT NULL,
                 solar_panels INTEGER NOT NULL,
-                solar_production REAL NOT NULL,
-                time DATETIME DEFAULT current_timestamp
+                solar_production REAL NOT NULL
             )",
             (),
         )?;

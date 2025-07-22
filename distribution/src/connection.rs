@@ -29,7 +29,7 @@ pub async fn send_message_to_renewables(message: &str) -> Result<String, Box<dyn
 
 pub async fn send_message_to_hydro(message: &str) -> Result<String, Box<dyn Error>> {
     let mut stream = TcpStream::connect("127.0.0.1:8082").await.map_err(|e| {
-        format!("Failed to connect to renewables server: {}", e)
+        format!("Failed to connect to hydro server: {}", e)
     })?;
     
     stream.write_all(message.as_bytes()).await.map_err(|e| {
