@@ -11,7 +11,7 @@ async fn main() {
 
     loop {
         match select_renewables().await{
-            Ok(_) => println!("Session ended safely"),
+            Ok(_) => println!(""),
             Err(e) => eprintln!("Error running program: {}", e),
         }
     }

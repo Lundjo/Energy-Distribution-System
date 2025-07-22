@@ -1,5 +1,4 @@
 use rand::Rng;
-
 use crate::database::insert_into_db;
 
 pub struct RenewableEnergy {
