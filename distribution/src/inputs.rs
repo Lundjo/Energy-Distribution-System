@@ -1,5 +1,5 @@
 use crate::connection;
-use connection::{send_message_to_renewables, send_message2};
+use connection::send_message_to_renewables;
 use std::error::Error;
 use tokio::io::AsyncBufReadExt;
 

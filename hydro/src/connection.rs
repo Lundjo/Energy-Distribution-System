@@ -1,9 +1,9 @@
 use tokio::net::TcpListener;
 use tokio::io::AsyncReadExt;
+use tokio::sync::mpsc;
 
-pub async fn start_server() {
+pub async fn start_server(tx: mpsc::Sender<(String, tokio::net::TcpStream)>) {
     let listener = TcpListener::bind("127.0.0.1:8082").await.unwrap();
-    println!("Listening on port na 8082...");
 
     loop {
         match listener.accept().await {
@@ -14,7 +14,12 @@ pub async fn start_server() {
                         if n == 0 {
                             continue;
                         }
-                        println!("Received message: {}", String::from_utf8_lossy(&buffer[..n]));
+                        let message = String::from_utf8_lossy(&buffer[..n]).to_string();
+
+                        if let Err(e) = tx.send((message, stream)).await {
+                            eprintln!("Failed to send to main: {}", e);
+                            break;
+                        }
                     }
                     Err(e) => {
                         eprintln!("Failed to read from socket: {}", e);
