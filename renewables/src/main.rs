@@ -22,14 +22,11 @@ async fn main() {
     });
 
     let mut renewables = RenewableEnergy::new();
-
     let _ = get_initial_values(&mut renewables);
 
     loop {
         tokio::select! {
             Some((message, mut stream)) = rx.recv() => {
-                println!("Received message from server side: {}", message);
-
                 let response = select_method(&mut renewables, message);
                 if let Err(e) = stream.write_all(response.as_bytes()).await {
                     eprintln!("Failed to send response from main: {}", e);

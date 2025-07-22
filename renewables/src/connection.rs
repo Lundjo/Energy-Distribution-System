@@ -6,7 +6,6 @@ use crate::models::RenewableEnergy;
 
 pub async fn start_server(tx: mpsc::Sender<(String, tokio::net::TcpStream)>) {
     let listener = TcpListener::bind("127.0.0.1:8081").await.unwrap();
-    println!("Listening on port na 8081...");
 
     loop {
         match listener.accept().await {
@@ -18,7 +17,6 @@ pub async fn start_server(tx: mpsc::Sender<(String, tokio::net::TcpStream)>) {
                             continue;
                         }
                         let message = String::from_utf8_lossy(&buffer[..n]).to_string();
-                        println!("Received message: {}", message);
 
                         if let Err(e) = tx.send((message, stream)).await {
                             eprintln!("Failed to send to main: {}", e);

@@ -67,7 +67,7 @@ impl RenewableEnergy {
 
         let _ = insert_into_db(self);
 
-        return String::from(format!("Wind generators: {}, Solar panels: {}", self.wind_generators, self.solar_panels));
+        return String::from(format!("Values successfully changed"));
     }
 
     pub fn calculate_production(&self) -> String {
