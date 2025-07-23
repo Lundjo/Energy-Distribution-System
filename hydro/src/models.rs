@@ -19,7 +19,7 @@ impl HydroEnergy {
             Err(_) => return String::from("Invalid power sent"),
         };
 
-        if(self.production + additional_production > 200.0) {
+        if self.production + additional_production > 200.0 {
             return String::from("Not enough power can be supplied");
         }
 

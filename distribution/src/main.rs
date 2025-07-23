@@ -1,9 +1,7 @@
 mod connection;
 use connection::start_server;
 mod inputs;
-use inputs::select_renewables;
-
-use crate::connection::send_message_to_hydro;
+use inputs::select_operation;
 
 #[tokio::main]
 async fn main() {
@@ -11,8 +9,10 @@ async fn main() {
         start_server().await;
     });
 
-    match send_message_to_hydro("40.0").await{
-        Ok(response) => println!("Server responded: {}", response),
-        Err(e) => eprintln!("Error running program: {}", e),
+    loop {
+        match select_operation().await{
+            Ok(_) => print!(""),
+            Err(e) => eprintln!("Error running program: {}", e),
+        }
     }
 }
