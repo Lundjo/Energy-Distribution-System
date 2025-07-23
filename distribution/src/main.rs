@@ -12,16 +12,16 @@ async fn main() {
         start_server(tx).await;
     });
 
-    let mut last_message: Option<String> = None;
+    let mut client: Option<(String, tokio::net::TcpStream)> = None;
 
     loop {
         tokio::select! {
             Some((message, mut stream)) = rx.recv() => {
                 println!("New client message: {:?}", message);
-                last_message = Some(message);
+                client = Some((message, stream));
             }
 
-            result = select_operation(&last_message) => {
+            result = select_operation(&mut client) => {
                 match result {
                     Ok(_) => (),
                     Err(e) => eprintln!("Error: {}", e),

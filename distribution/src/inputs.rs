@@ -1,6 +1,6 @@
 use crate::connection::{send_message_to_hydro, send_message_to_renewables};
 use std::error::Error;
-use tokio::io::AsyncBufReadExt;
+use tokio::io::{AsyncBufReadExt, AsyncWriteExt};
 
 pub async fn change_number_of_generators() -> Result<(), Box<dyn Error>> {
     let stdin = tokio::io::BufReader::new(tokio::io::stdin());
@@ -53,7 +53,7 @@ pub async fn get_current_production_renewables() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-pub async fn select_operation(last_message: &Option<String>) -> Result<(), Box<dyn Error>> {
+pub async fn select_operation(client: &mut Option<(String, tokio::net::TcpStream)>) -> Result<(), Box<dyn Error>> {
     let stdin = tokio::io::BufReader::new(tokio::io::stdin());
     let mut lines = stdin.lines();
 
@@ -62,7 +62,7 @@ pub async fn select_operation(last_message: &Option<String>) -> Result<(), Box<d
         match lines.next_line().await? {
             Some(input) => match input.trim().parse::<i32>() {
                 Ok(num) if num == 1 || num == 2 || num == 3 => break num,
-                Ok(_) => eprintln!("Please enter either 1 or 2!"),
+                Ok(_) => eprintln!("Please enter either 1, 2 or 3!"),
                 Err(_) => eprintln!("Bad input, please enter a valid number!"),
             },
             None => return Ok(()),
@@ -73,10 +73,14 @@ pub async fn select_operation(last_message: &Option<String>) -> Result<(), Box<d
         change_hydro_usage().await?;
     } else if op == 2{
         change_number_of_generators().await?;
-    } else {
-        match last_message {
-            Some(msg) => println!("Last message: {}", msg),
-            None => println!("No new messages."),
+    } else if op == 3 {
+        if let Some((msg, mut stream)) = client.take() {
+            println!("Last message: {}", msg);
+            if let Err(e) = stream.write_all(msg.as_bytes()).await {
+                eprintln!("Failed to send response: {}", e);
+            }
+        } else {
+            println!("No client connected");
         }
     }
 
