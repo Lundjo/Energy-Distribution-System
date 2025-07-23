@@ -53,15 +53,15 @@ pub async fn get_current_production_renewables() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-pub async fn select_operation() -> Result<(), Box<dyn Error>> {
+pub async fn select_operation(last_message: &Option<String>) -> Result<(), Box<dyn Error>> {
     let stdin = tokio::io::BufReader::new(tokio::io::stdin());
     let mut lines = stdin.lines();
 
     let op = loop {
-        println!("Choose operation - 1: Change hydro plant power output, 2: Change number of renewables ");
+        println!("Choose operation - 1: Change hydro plant power output, 2: Change number of renewables, 3: Show client request");
         match lines.next_line().await? {
             Some(input) => match input.trim().parse::<i32>() {
-                Ok(num) if num == 1 || num == 2 => break num,
+                Ok(num) if num == 1 || num == 2 || num == 3 => break num,
                 Ok(_) => eprintln!("Please enter either 1 or 2!"),
                 Err(_) => eprintln!("Bad input, please enter a valid number!"),
             },
@@ -71,8 +71,13 @@ pub async fn select_operation() -> Result<(), Box<dyn Error>> {
 
     if op == 1 {
         change_hydro_usage().await?;
-    } else {
+    } else if op == 2{
         change_number_of_generators().await?;
+    } else {
+        match last_message {
+            Some(msg) => println!("Last message: {}", msg),
+            None => println!("No new messages."),
+        }
     }
 
     Ok(())

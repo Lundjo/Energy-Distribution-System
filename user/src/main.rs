@@ -15,7 +15,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
         let message = input.trim();
         
         match send_message(message).await {
-            Ok(_) => println!("Message sent successfully: '{}'", message),
+            Ok(reposne) => println!("Server response: '{}'", reposne),
             Err(e) => eprintln!("Message could not be sent: {}", e),
         }
     }

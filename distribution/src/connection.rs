@@ -1,6 +1,7 @@
 use tokio::net::{TcpStream, TcpListener};
 use tokio::io::{AsyncWriteExt, AsyncReadExt};
 use std::error::Error;
+use tokio::sync::mpsc;
 
 pub async fn send_message_to_renewables(message: &str) -> Result<String, Box<dyn Error>> {
     let mut stream = TcpStream::connect("127.0.0.1:8081").await.map_err(|e| {
@@ -52,7 +53,7 @@ pub async fn send_message_to_hydro(message: &str) -> Result<String, Box<dyn Erro
     Ok(response)
 }
 
-pub async fn start_server() {
+pub async fn start_server(tx: mpsc::Sender<(String, tokio::net::TcpStream)>) {
     let listener = TcpListener::bind("127.0.0.1:8083").await.unwrap();
 
     loop {
@@ -64,7 +65,12 @@ pub async fn start_server() {
                         if n == 0 {
                             continue;
                         }
-                        println!("Received message: {}", String::from_utf8_lossy(&buffer[..n]));
+                        let message = String::from_utf8_lossy(&buffer[..n]).to_string();
+
+                        if let Err(e) = tx.send((message, stream)).await {
+                            eprintln!("Failed to send to main: {}", e);
+                            break;
+                        }
                     }
                     Err(e) => {
                         eprintln!("Failed to read from socket: {}", e);
