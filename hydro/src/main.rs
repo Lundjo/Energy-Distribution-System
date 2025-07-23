@@ -1,5 +1,5 @@
 mod connection;
-use connection::start_server;
+use connection::{start_server, select_method};
 mod models;
 use models::HydroEnergy;
 use tokio::sync::mpsc;
@@ -22,7 +22,7 @@ async fn main() {
     loop {
         tokio::select! {
             Some((message, mut stream)) = rx.recv() => {
-                let response = hydro.change_production(message);
+                let response = select_method(&mut hydro, message);
                 if let Err(e) = stream.write_all(response.as_bytes()).await {
                     eprintln!("Failed to send response from main: {}", e);
                 }

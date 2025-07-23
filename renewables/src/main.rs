@@ -33,7 +33,6 @@ async fn main() {
             },
             _ = sleep(Duration::from_secs(5)) => {
                 renewables.simulate_production();
-                println!("Wind: {:.2} kWh| Sun: {:.2} kWh", renewables.wind_production, renewables.solar_production);
             }
         }
     }

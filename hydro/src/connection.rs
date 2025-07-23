@@ -2,6 +2,8 @@ use tokio::net::TcpListener;
 use tokio::io::AsyncReadExt;
 use tokio::sync::mpsc;
 
+use crate::models::HydroEnergy;
+
 pub async fn start_server(tx: mpsc::Sender<(String, tokio::net::TcpStream)>) {
     let listener = TcpListener::bind("127.0.0.1:8082").await.unwrap();
 
@@ -30,5 +32,17 @@ pub async fn start_server(tx: mpsc::Sender<(String, tokio::net::TcpStream)>) {
                 eprintln!("Failed to accept connection: {}", e);
             }
         }
+    }
+}
+
+pub fn select_method(h: &mut HydroEnergy, message: String) -> String {
+    let parts: Vec<&str> = message.split_whitespace().collect();
+
+    if parts[0] == "0" {
+        return HydroEnergy::change_production(h, message);
+    } else if parts[0] == "1" {
+        return HydroEnergy::return_production(h);
+    } else {
+        return String::from("Unsupported method");
     }
 }

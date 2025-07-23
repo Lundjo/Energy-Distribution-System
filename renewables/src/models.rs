@@ -39,16 +39,16 @@ impl RenewableEnergy {
     pub fn add_generators(&mut self, message: String) -> String {
         let parts: Vec<&str> = message.split_whitespace().collect();
 
-        if parts.len() != 2 {
-            return String::from("Invalid number of values sent");
+        if parts.len() != 3 {
+            return String::from(format!("Invalid number of values sent {}", message));
         }
         
-        let wind_generators = match parts[0].parse::<i32>() {
+        let wind_generators = match parts[1].parse::<i32>() {
             Ok(num) => num,
             Err(_) => return String::from("Invalid number of wind generators sent"),
         };
 
-        let solar_panels = match parts[1].parse::<i32>() {
+        let solar_panels = match parts[2].parse::<i32>() {
             Ok(num) => num,
             Err(_) => return String::from("Invalid number of solar panels sent"),
         };

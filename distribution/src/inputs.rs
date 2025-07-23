@@ -1,4 +1,4 @@
-use crate::connection::{self, send_message_to_hydro, send_message_to_renewables};
+use crate::connection::{send_message_to_hydro, send_message_to_renewables};
 use std::error::Error;
 use tokio::io::AsyncBufReadExt;
 
@@ -42,7 +42,7 @@ pub async fn change_number_of_generators() -> Result<(), Box<dyn Error>> {
     }
 }
 
-pub async fn get_current_production() -> Result<(), Box<dyn Error>> {
+pub async fn get_current_production_renewables() -> Result<(), Box<dyn Error>> {
     let message = format!("1");
         
     match send_message_to_renewables(&message).await {
@@ -93,7 +93,7 @@ pub async fn change_hydro_usage() -> Result<(), Box<dyn Error>> {
         }
     };
 
-    let message = format!("{}", num);
+    let message = format!("0 {}", num);
         
     match send_message_to_hydro(&message).await {
         Ok(response) => {
@@ -105,4 +105,15 @@ pub async fn change_hydro_usage() -> Result<(), Box<dyn Error>> {
             Err(e.into())
         },
     }
+}
+
+pub async fn get_current_production_hydro() -> Result<(), Box<dyn Error>> {
+    let message = format!("1");
+        
+    match send_message_to_hydro(&message).await {
+        Ok(response) => println!("Server responded: {}", response),
+        Err(e) => eprintln!("Error: {}", e),
+    }
+
+    Ok(())
 }
