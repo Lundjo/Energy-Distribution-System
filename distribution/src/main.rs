@@ -4,6 +4,7 @@ mod inputs;
 use inputs::select_operation;
 use tokio::sync::mpsc;
 
+
 #[tokio::main]
 async fn main() {
     let (tx, mut rx) = mpsc::channel(32);
@@ -16,8 +17,8 @@ async fn main() {
 
     loop {
         tokio::select! {
-            Some((message, mut stream)) = rx.recv() => {
-                println!("New client message: {:?}", message);
+            Some((message, stream)) = rx.recv() => {
+                println!("New user message: {:?}", message);
                 client = Some((message, stream));
             }
 

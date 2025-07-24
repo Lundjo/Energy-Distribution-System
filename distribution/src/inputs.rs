@@ -42,15 +42,16 @@ pub async fn change_number_of_generators() -> Result<(), Box<dyn Error>> {
     }
 }
 
-pub async fn get_current_production_renewables() -> Result<(), Box<dyn Error>> {
+pub async fn get_current_production_renewables() -> Result<f64, Box<dyn Error>> {
     let message = format!("1");
         
-    match send_message_to_renewables(&message).await {
-        Ok(response) => println!("Server responded: {}", response),
-        Err(e) => eprintln!("Error: {}", e),
-    }
+    let response = send_message_to_renewables(&message).await?;
 
-    Ok(())
+    let parts: Vec<&str> = response.split_whitespace().collect();
+    let wind = parts[0].parse::<f64>()?;
+    let solar = parts[1].parse::<f64>()?;
+    
+    Ok(wind+solar)
 }
 
 pub async fn select_operation(client: &mut Option<(String, tokio::net::TcpStream)>) -> Result<(), Box<dyn Error>> {
@@ -75,7 +76,11 @@ pub async fn select_operation(client: &mut Option<(String, tokio::net::TcpStream
         change_number_of_generators().await?;
     } else if op == 3 {
         if let Some((msg, mut stream)) = client.take() {
-            println!("Last message: {}", msg);
+            let h = get_current_production_hydro().await?;
+            let r = get_current_production_renewables().await?;
+            let total = h+r;
+            println!("Total production: Hydro = {}, Renewables = {}, Combined = {}", h, r, total);
+
             if let Err(e) = stream.write_all(msg.as_bytes()).await {
                 eprintln!("Failed to send response: {}", e);
             }
@@ -116,13 +121,11 @@ pub async fn change_hydro_usage() -> Result<(), Box<dyn Error>> {
     }
 }
 
-pub async fn get_current_production_hydro() -> Result<(), Box<dyn Error>> {
+pub async fn get_current_production_hydro() -> Result<f64, Box<dyn Error>> {
     let message = format!("1");
         
-    match send_message_to_hydro(&message).await {
-        Ok(response) => println!("Server responded: {}", response),
-        Err(e) => eprintln!("Error: {}", e),
-    }
-
-    Ok(())
+    let response = send_message_to_hydro(&message).await?;
+    
+    let value = response.parse::<f64>()?;
+    Ok(value)
 }
