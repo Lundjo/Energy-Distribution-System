@@ -18,7 +18,7 @@ async fn main() {
     loop {
         tokio::select! {
             Some((message, stream)) = rx.recv() => {
-                println!("New user message: {:?}", message);
+                println!("New user requirement: {:?}W", message);
                 client = Some((message, stream));
             }
 

@@ -75,17 +75,8 @@ pub async fn select_operation(client: &mut Option<(String, tokio::net::TcpStream
     } else if op == 2{
         change_number_of_generators().await?;
     } else if op == 3 {
-        if let Some((msg, mut stream)) = client.take() {
-            let h = get_current_production_hydro().await?;
-            let r = get_current_production_renewables().await?;
-            let total = h+r;
-            println!("Total production: Hydro = {}, Renewables = {}, Combined = {}", h, r, total);
-
-            if let Err(e) = stream.write_all(msg.as_bytes()).await {
-                eprintln!("Failed to send response: {}", e);
-            }
-        } else {
-            println!("No client connected");
+        if let Err(e) = user(client).await {
+            eprintln!("Error in user function: {}", e);
         }
     }
 
@@ -128,4 +119,75 @@ pub async fn get_current_production_hydro() -> Result<f64, Box<dyn Error>> {
     
     let value = response.parse::<f64>()?;
     Ok(value)
+}
+
+pub async fn user(client: &mut Option<(String, tokio::net::TcpStream)>) -> Result<(), Box<dyn Error>> {
+    if let Some((msg, mut stream)) = client.take() {
+        let required =  msg.parse::<f64>()?;
+        let h = get_current_production_hydro().await?;
+        let r = get_current_production_renewables().await?;
+        let total = required -  h - r;
+
+        let stdin = tokio::io::BufReader::new(tokio::io::stdin());
+        let mut lines = stdin.lines();
+
+        if total <= 0.0 {
+            let op = loop {
+                println!("Enough power can be supplied. Press 1 to allow user to turn on devices, 2 to deny request, 3 for main menu: ");
+                match lines.next_line().await? {
+                    Some(input) => match input.trim().parse::<i32>() {
+                        Ok(num) if num == 1 || num == 2 || num == 3 => break num,
+                        Ok(_) => eprintln!("Please enter either 1, 2 or 3!"),
+                        Err(_) => eprintln!("Bad input, please enter a valid number!"),
+                    },
+                    None => return Ok(()),
+                }
+            };
+
+            let message;
+
+            if op == 1 {
+                message = format!("1");
+                if let Err(e) = stream.write_all(message.as_bytes()).await {
+                    eprintln!("Failed to send response: {}", e);
+                }
+            } else if op == 2{
+                message = format!("0");
+                if let Err(e) = stream.write_all(message.as_bytes()).await {
+                    eprintln!("Failed to send response: {}", e);
+                }
+            } else if op == 3 {
+                *client = Some((msg, stream));
+            }
+        } else {
+            let op = loop {
+                println!("Additional required power: {}W. Press 1 to deny request or 2 to return to main menu: ", total);
+                match lines.next_line().await? {
+                    Some(input) => match input.trim().parse::<i32>() {
+                        Ok(num) if num == 1 || num == 2 => break num,
+                        Ok(_) => eprintln!("Please enter either 1 or 2!"),
+                        Err(_) => eprintln!("Bad input, please enter a valid number!"),
+                    },
+                    None => return Ok(()),
+                }
+            };
+
+            let message;
+
+            if op == 1{
+                message = format!("0");
+                if let Err(e) = stream.write_all(message.as_bytes()).await {
+                    eprintln!("Failed to send response: {}", e);
+                }
+            } else if op == 2 {
+                *client = Some((msg, stream));
+            }
+        }
+
+        
+    } else {
+        println!("No client connected");
+    }
+
+    Ok(())
 }
