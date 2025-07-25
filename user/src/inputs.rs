@@ -8,6 +8,7 @@ pub async fn select_device(dev: &mut Devices) -> Result<(), Box<dyn Error>> {
     let mut lines = stdin.lines();
 
     let d = loop {
+        dev.list_devices();
         println!("Enter number from 1 to 5 to choose which device to change the number of:");
         match lines.next_line().await? {
             Some(input) => match input.trim().parse::<i32>() {
@@ -57,11 +58,25 @@ pub async fn send_wattage(dev: &mut Devices, d: i32, num: i32) -> Result<(), Box
         }
 
         match send_message(&message).await {
-            Ok(reposne) => println!("Server response: '{}'", reposne),
+            Ok(response) => {
+                match response.parse::<i32>() {
+                    Ok(1) => {
+                        dev.change_active_device_number(d, num);
+                        println!("Successfully changed number of active devices");
+                    },
+                    Ok(_) => {
+                        println!("Can't turn on devices");
+                    },
+                    Err(e) => {
+                        eprintln!("Failed to parse server response: {}", e);
+                    }
+                }
+            },
             Err(e) => eprintln!("Message could not be sent: {}", e),
         }
     } else {
         dev.change_active_device_number(d, num);
+        println!("Succesfully changed number of active devices'");
     }
      
     Ok(())
