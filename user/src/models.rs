@@ -24,4 +24,15 @@ impl Devices {
         println!("Device 4: {} active", self.d4);
         println!("Device 5: {} active", self.d5);
     }
+
+    pub fn change_active_device_number(&mut self, dev: i32, num: i32) {
+        match dev {
+            1 => self.d1 += num,
+            2 => self.d2 += num,
+            3 => self.d3 += num,
+            4 => self.d4 += num,
+            5 => self.d5 += num,
+            _ => (),
+        }
+    }
 }

@@ -54,35 +54,6 @@ pub async fn get_current_production_renewables() -> Result<f64, Box<dyn Error>> 
     Ok(wind+solar)
 }
 
-pub async fn select_operation(client: &mut Option<(String, tokio::net::TcpStream)>) -> Result<(), Box<dyn Error>> {
-    let stdin = tokio::io::BufReader::new(tokio::io::stdin());
-    let mut lines = stdin.lines();
-
-    let op = loop {
-        println!("Choose operation - 1: Change hydro plant power output, 2: Change number of renewables, 3: Show client request");
-        match lines.next_line().await? {
-            Some(input) => match input.trim().parse::<i32>() {
-                Ok(num) if num == 1 || num == 2 || num == 3 => break num,
-                Ok(_) => eprintln!("Please enter either 1, 2 or 3!"),
-                Err(_) => eprintln!("Bad input, please enter a valid number!"),
-            },
-            None => return Ok(()),
-        }
-    };
-
-    if op == 1 {
-        change_hydro_usage().await?;
-    } else if op == 2{
-        change_number_of_generators().await?;
-    } else if op == 3 {
-        if let Err(e) = user(client).await {
-            eprintln!("Error in user function: {}", e);
-        }
-    }
-
-    Ok(())
-}
-
 pub async fn change_hydro_usage() -> Result<(), Box<dyn Error>> {
     let stdin = tokio::io::BufReader::new(tokio::io::stdin());
     let mut lines = stdin.lines();
@@ -119,6 +90,35 @@ pub async fn get_current_production_hydro() -> Result<f64, Box<dyn Error>> {
     
     let value = response.parse::<f64>()?;
     Ok(value)
+}
+
+pub async fn select_operation(client: &mut Option<(String, tokio::net::TcpStream)>) -> Result<(), Box<dyn Error>> {
+    let stdin = tokio::io::BufReader::new(tokio::io::stdin());
+    let mut lines = stdin.lines();
+
+    let op = loop {
+        println!("Choose operation - 1: Change hydro plant power output, 2: Change number of renewables, 3: Show client request");
+        match lines.next_line().await? {
+            Some(input) => match input.trim().parse::<i32>() {
+                Ok(num) if num == 1 || num == 2 || num == 3 => break num,
+                Ok(_) => eprintln!("Please enter either 1, 2 or 3!"),
+                Err(_) => eprintln!("Bad input, please enter a valid number!"),
+            },
+            None => return Ok(()),
+        }
+    };
+
+    if op == 1 {
+        change_hydro_usage().await?;
+    } else if op == 2{
+        change_number_of_generators().await?;
+    } else if op == 3 {
+        if let Err(e) = user(client).await {
+            eprintln!("Error in user function: {}", e);
+        }
+    }
+
+    Ok(())
 }
 
 pub async fn user(client: &mut Option<(String, tokio::net::TcpStream)>) -> Result<(), Box<dyn Error>> {
