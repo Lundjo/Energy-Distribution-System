@@ -1,3 +1,5 @@
+use crate::database::insert_into_db;
+
 pub struct Devices {
     pub d1: i32,
     pub d2: i32,
@@ -34,5 +36,7 @@ impl Devices {
             5 => self.d5 += num,
             _ => (),
         }
+
+        let _ = insert_into_db(self);
     }
 }
