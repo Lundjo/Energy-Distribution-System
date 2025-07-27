@@ -1,0 +1,1 @@
+D:\Energy-Distribution-System\target\debug\renewables.exe: D:\Energy-Distribution-System\renewables\src\connection.rs D:\Energy-Distribution-System\renewables\src\database.rs D:\Energy-Distribution-System\renewables\src\main.rs D:\Energy-Distribution-System\renewables\src\models.rs

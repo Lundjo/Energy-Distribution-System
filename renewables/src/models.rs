@@ -11,26 +11,26 @@ pub struct RenewableEnergy {
 impl RenewableEnergy {
     pub fn new() -> Self {
         RenewableEnergy {
-            wind_generators: 5,
-            solar_panels: 5,
-            wind_production: 15.0,
-            solar_production: 15.0,
+            wind_generators: 2,
+            solar_panels: 3,
+            wind_production: 5.0,
+            solar_production: 0.5,
         }
     }
 
     pub fn simulate_production(&mut self) {
-        self.wind_production += rand::thread_rng().gen_range(-1.0..1.0);
+        self.wind_production += rand::thread_rng().gen_range(-0.5..0.5);
         if self.wind_production < 0.0 {
             self.wind_production = 0.0;
-        } else if self.wind_production > 20.0 {
-            self.wind_production = 20.0;
+        } else if self.wind_production > 10.0 {
+            self.wind_production = 10.0;
         }
 
-        self.solar_production += rand::thread_rng().gen_range(-1.0..1.0);
+        self.solar_production += rand::thread_rng().gen_range(-0.05..0.05);
         if self.solar_production < 0.0 {
             self.solar_production = 0.0;
-        } else if self.solar_production > 20.0 {
-            self.solar_production = 20.0;
+        } else if self.solar_production > 1.0 {
+            self.solar_production = 1.0;
         }
 
         let _ = insert_into_db(self);

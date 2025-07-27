@@ -49,11 +49,11 @@ pub async fn send_wattage(dev: &mut Devices, d: i32, num: i32) -> Result<(), Box
     if num > 0 {
         let mut message = String::from("");
         match num {
-            1 => message = ((dev.d1 + num) * 10).to_string(),
-            2 => message = ((dev.d2 + num) * 20).to_string(),
-            3 => message = ((dev.d3 + num) * 30).to_string(),
-            4 => message = ((dev.d4 + num) * 40).to_string(),
-            5 => message = ((dev.d5 + num) * 50).to_string(),
+            1 => message = ((dev.d1 as f64 + num as f64) * 0.1).to_string(),
+            2 => message = ((dev.d2 as f64 + num as f64) * 0.5).to_string(),
+            3 => message = ((dev.d3 as f64 + num as f64) * 1.5).to_string(),
+            4 => message = ((dev.d4 as f64 + num as f64) * 3.0).to_string(),
+            5 => message = ((dev.d5 as f64 + num as f64) * 5.0).to_string(),
             _ => (),
         }
 

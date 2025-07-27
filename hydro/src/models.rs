@@ -21,12 +21,12 @@ impl HydroEnergy {
             Err(_) => return String::from("Invalid power sent {}"),
         };
 
-        if self.production + additional_production > 200.0 {
+        if self.production + additional_production > 50.0 {
             return String::from("Not enough power can be supplied");
         }
 
         self.production += additional_production;
-        self.usage = self.production * 100.0 / 200.0;
+        self.usage = self.production * 100.0 / 50.0;
         let _ = insert_into_db(self);
 
         return String::from(format!("Power production changed. Current load: {}", self.usage));

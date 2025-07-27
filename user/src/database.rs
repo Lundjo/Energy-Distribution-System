@@ -11,11 +11,11 @@ pub fn create_db() -> Result<()> {
         conn.execute(
             "CREATE TABLE user (
                 id   INTEGER PRIMARY KEY,
-                d1 INTEGER NOT NULL,
-                d2 INTEGER NOT NULL,
-                d3 INTEGER NOT NULL,
-                d4 INTEGER NOT NULL,
-                d5 INTEGER NOT NULL
+                small INTEGER NOT NULL,
+                medium INTEGER NOT NULL,
+                large INTEGER NOT NULL,
+                strong INTEGER NOT NULL,
+                industrial INTEGER NOT NULL
             )",
             (),
         )?;
@@ -32,7 +32,7 @@ pub fn insert_into_db(dev: &mut Devices) -> Result<()> {
         let conn = Connection::open(&db_file_path)?;
 
         conn.execute(
-            "INSERT INTO user (d1, d2, d3, d4, d5) VALUES (?1, ?2, ?3, ?4, ?5)",
+            "INSERT INTO user (small, medium, large, strong, industrial) VALUES (?1, ?2, ?3, ?4, ?5)",
             (&dev.d1, &dev.d2, &dev.d3, &dev.d4, &dev.d5),
         )?;
     }
@@ -49,7 +49,7 @@ pub fn get_initial_values(dev: &mut Devices) -> Result<()> {
         let count: i64 = conn.query_row("SELECT COUNT(*) FROM user", [], |row| row.get(0))?;
         if count > 0 {
             let mut stmt = conn.prepare(
-                "SELECT d1, d2, d3, d4, d5 
+                "SELECT small, medium, large, strong, industrial 
                 FROM user 
                 ORDER BY id DESC 
                 LIMIT 1"

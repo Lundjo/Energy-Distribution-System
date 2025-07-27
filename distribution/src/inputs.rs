@@ -161,7 +161,7 @@ pub async fn user(client: &mut Option<(String, tokio::net::TcpStream)>) -> Resul
             }
         } else {
             let op = loop {
-                println!("Additional required power: {}W. Press 1 to deny request or 2 to return to main menu: ", total);
+                println!("Additional required power: {} kW. Press 1 to deny request or 2 to return to main menu: ", total);
                 match lines.next_line().await? {
                     Some(input) => match input.trim().parse::<i32>() {
                         Ok(num) if num == 1 || num == 2 => break num,

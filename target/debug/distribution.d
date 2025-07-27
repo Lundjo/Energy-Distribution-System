@@ -1,0 +1,1 @@
+D:\Energy-Distribution-System\target\debug\distribution.exe: D:\Energy-Distribution-System\distribution\src\connection.rs D:\Energy-Distribution-System\distribution\src\inputs.rs D:\Energy-Distribution-System\distribution\src\main.rs

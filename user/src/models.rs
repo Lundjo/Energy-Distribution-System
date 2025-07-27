@@ -20,11 +20,11 @@ impl Devices {
     }
 
     pub fn list_devices(&self) {
-        println!("Device 1: {} active", self.d1);
-        println!("Device 2: {} active", self.d2);
-        println!("Device 3: {} active", self.d3);
-        println!("Device 4: {} active", self.d4);
-        println!("Device 5: {} active", self.d5);
+        println!("1. Small: {} active", self.d1);
+        println!("2. Medium: {} active", self.d2);
+        println!("3. Large: {} active", self.d3);
+        println!("4. Strong: {} active", self.d4);
+        println!("5. Industrial: {} active", self.d5);
     }
 
     pub fn change_active_device_number(&mut self, dev: i32, num: i32) {
