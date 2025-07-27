@@ -20,15 +20,15 @@ impl RenewableEnergy {
 
     pub fn simulate_production(&mut self) {
         self.wind_production += rand::thread_rng().gen_range(-1.0..1.0);
-        if self.wind_production < 10.0 {
-            self.wind_production = 10.0;
+        if self.wind_production < 0.0 {
+            self.wind_production = 0.0;
         } else if self.wind_production > 20.0 {
             self.wind_production = 20.0;
         }
 
         self.solar_production += rand::thread_rng().gen_range(-1.0..1.0);
-        if self.solar_production < 10.0 {
-            self.solar_production = 10.0;
+        if self.solar_production < 0.0 {
+            self.solar_production = 0.0;
         } else if self.solar_production > 20.0 {
             self.solar_production = 20.0;
         }

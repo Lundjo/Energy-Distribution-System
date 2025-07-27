@@ -7,7 +7,7 @@ use tokio::sync::mpsc;
 
 #[tokio::main]
 async fn main() {
-    let (tx, mut rx) = mpsc::channel(32);
+    let (tx, mut rx) = mpsc::channel(2);
 
     tokio::spawn(async {
         start_server(tx).await;

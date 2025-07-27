@@ -10,7 +10,7 @@ use database::{create_db, get_initial_values};
 #[tokio::main]
 async fn main() {
     let _ = create_db();
-    let (tx, mut rx) = mpsc::channel(32);
+    let (tx, mut rx) = mpsc::channel(2);
 
     tokio::spawn(async {
         start_server(tx).await;
@@ -20,12 +20,10 @@ async fn main() {
     let _ = get_initial_values(&mut hydro);
 
     loop {
-        tokio::select! {
-            Some((message, mut stream)) = rx.recv() => {
-                let response = select_method(&mut hydro, message);
-                if let Err(e) = stream.write_all(response.as_bytes()).await {
-                    eprintln!("Failed to send response from main: {}", e);
-                }
+        while let Some((message, mut stream)) = rx.recv().await {
+            let response = select_method(&mut hydro, message);
+            if let Err(e) = stream.write_all(response.as_bytes()).await {
+                eprintln!("Failed to send response: {}", e);
             }
         }
     }

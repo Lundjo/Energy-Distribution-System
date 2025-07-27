@@ -14,7 +14,7 @@ use crate::database::get_initial_values;
 #[tokio::main]
 async fn main() {
     let _ = create_db();
-    let (tx, mut rx) = mpsc::channel(32);
+    let (tx, mut rx) = mpsc::channel(2);
     
     tokio::spawn(async move {
         start_server(tx).await;
