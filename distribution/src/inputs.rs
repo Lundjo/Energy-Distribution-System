@@ -32,7 +32,7 @@ pub async fn change_number_of_generators() -> Result<(), Box<dyn Error>> {
         
     match send_message_to_renewables(&message).await {
         Ok(response) => {
-            println!("Server responded: {}", response);
+            println!("{}", response);
             Ok(())
         },
         Err(e) => {
@@ -73,7 +73,7 @@ pub async fn change_hydro_usage() -> Result<(), Box<dyn Error>> {
         
     match send_message_to_hydro(&message).await {
         Ok(response) => {
-            println!("Server responded: {}", response);
+            println!("{}", response);
             Ok(())
         },
         Err(e) => {
@@ -161,7 +161,7 @@ pub async fn user(client: &mut Option<(String, tokio::net::TcpStream)>) -> Resul
             }
         } else {
             let op = loop {
-                println!("Additional required power: {} kW. Press 1 to deny request or 2 to return to main menu: ", total);
+                println!("Additional required power: {:.2} kW. Press 1 to deny request or 2 to return to main menu: ", total);
                 match lines.next_line().await? {
                     Some(input) => match input.trim().parse::<i32>() {
                         Ok(num) if num == 1 || num == 2 => break num,
