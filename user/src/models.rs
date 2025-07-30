@@ -29,16 +29,16 @@ impl Devices {
 
     pub fn change_active_device_number(&mut self, dev: i32, num: i32) {
         match dev {
+            1 => {
+                self.d1 += num;
+                if self.d1 < 0 {
+                    self.d1 = 0;
+                }
+            },
             2 => {
                 self.d2 += num;
                 if self.d2 < 0 {
                     self.d2 = 0;
-                }
-            },
-            3 => {
-                self.d3 += num;
-                if self.d3 < 0 {
-                    self.d3 = 0;
                 }
             },
             3 => {
